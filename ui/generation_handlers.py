@@ -1,5 +1,5 @@
 # ui/generation_handlers.py
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*- 
 import os
 import threading
 import tkinter as tk
@@ -21,11 +21,11 @@ from consistency_checker import check_consistency
 def generate_novel_architecture_ui(self):
     filepath = self.filepath_var.get().strip()
     if not filepath:
-        messagebox.showwarning("警告", "请先选择保存文件路径")
+        messagebox.showwarning("Warning", "Please select the save file path first.")
         return
 
     def task():
-        confirm = messagebox.askyesno("确认", "确定要生成小说架构吗？")
+        confirm = messagebox.askyesno("Confirm", "Are you sure you want to generate the novel architecture?")
         if not confirm:
             self.enable_button_safe(self.btn_generate_architecture)
             return
@@ -44,10 +44,10 @@ def generate_novel_architecture_ui(self):
             genre = self.genre_var.get().strip()
             num_chapters = self.safe_get_int(self.num_chapters_var, 10)
             word_number = self.safe_get_int(self.word_number_var, 3000)
-            # 获取内容指导
+            # Get user guidance
             user_guidance = self.user_guide_text.get("0.0", "end").strip()
 
-            self.safe_log("开始生成小说架构...")
+            self.safe_log("Starting to generate novel architecture...")
             Novel_architecture_generate(
                 interface_format=interface_format,
                 api_key=api_key,
@@ -61,11 +61,11 @@ def generate_novel_architecture_ui(self):
                 temperature=temperature,
                 max_tokens=max_tokens,
                 timeout=timeout_val,
-                user_guidance=user_guidance  # 添加内容指导参数
+                user_guidance=user_guidance  # Added user guidance parameter
             )
-            self.safe_log("✅ 小说架构生成完成。请在 'Novel Architecture' 标签页查看或编辑。")
+            self.safe_log("✅ Novel architecture generation complete. Please check or edit it in the 'Novel Architecture' tab.")
         except Exception:
-            self.handle_exception("生成小说架构时出错")
+            self.handle_exception("Error generating novel architecture")
         finally:
             self.enable_button_safe(self.btn_generate_architecture)
     threading.Thread(target=task, daemon=True).start()
@@ -73,11 +73,11 @@ def generate_novel_architecture_ui(self):
 def generate_chapter_blueprint_ui(self):
     filepath = self.filepath_var.get().strip()
     if not filepath:
-        messagebox.showwarning("警告", "请先选择保存文件路径")
+        messagebox.showwarning("Warning", "Please select the save file path first.")
         return
 
     def task():
-        if not messagebox.askyesno("确认", "确定要生成章节目录吗？"):
+        if not messagebox.askyesno("Confirm", "Are you sure you want to generate the chapter blueprint?"):
             self.enable_button_safe(self.btn_generate_chapter)
             return
         self.disable_button_safe(self.btn_generate_directory)
@@ -90,9 +90,9 @@ def generate_chapter_blueprint_ui(self):
             temperature = self.temperature_var.get()
             max_tokens = self.max_tokens_var.get()
             timeout_val = self.safe_get_int(self.timeout_var, 600)
-            user_guidance = self.user_guide_text.get("0.0", "end").strip()  # 新增获取用户指导
+            user_guidance = self.user_guide_text.get("0.0", "end").strip()  # Added user guidance
 
-            self.safe_log("开始生成章节蓝图...")
+            self.safe_log("Starting to generate chapter blueprint...")
             Chapter_blueprint_generate(
                 interface_format=interface_format,
                 api_key=api_key,
@@ -103,11 +103,11 @@ def generate_chapter_blueprint_ui(self):
                 temperature=temperature,
                 max_tokens=max_tokens,
                 timeout=timeout_val,
-                user_guidance=user_guidance  # 新增参数
+                user_guidance=user_guidance  # Added parameter
             )
-            self.safe_log("✅ 章节蓝图生成完成。请在 'Chapter Blueprint' 标签页查看或编辑。")
+            self.safe_log("✅ Chapter blueprint generation complete. Please check or edit it in the 'Chapter Blueprint' tab.")
         except Exception:
-            self.handle_exception("生成章节蓝图时出错")
+            self.handle_exception("Error generating chapter blueprint")
         finally:
             self.enable_button_safe(self.btn_generate_directory)
     threading.Thread(target=task, daemon=True).start()
@@ -115,7 +115,7 @@ def generate_chapter_blueprint_ui(self):
 def generate_chapter_draft_ui(self):
     filepath = self.filepath_var.get().strip()
     if not filepath:
-        messagebox.showwarning("警告", "请先配置保存文件路径。")
+        messagebox.showwarning("Warning", "Please configure the save file path first.")
         return
 
     def task():
@@ -144,9 +144,9 @@ def generate_chapter_draft_ui(self):
             embedding_model_name = self.embedding_model_name_var.get().strip()
             embedding_k = self.safe_get_int(self.embedding_retrieval_k_var, 4)
 
-            self.safe_log(f"生成第{chap_num}章草稿：准备生成请求提示词...")
+            self.safe_log(f"Generating chapter {chap_num} draft: preparing to generate prompt...")
 
-            # 调用新添加的 build_chapter_prompt 函数构造初始提示词
+            # Call the newly added build_chapter_prompt function to construct the initial prompt
             from novel_generator.chapter import build_chapter_prompt
             prompt_text = build_chapter_prompt(
                 api_key=api_key,
@@ -171,22 +171,22 @@ def generate_chapter_draft_ui(self):
                 timeout=timeout_val
             )
 
-            # 弹出可编辑提示词对话框，等待用户确认或取消
+            # Show editable prompt dialog, waiting for user confirmation or cancellation
             result = {"prompt": None}
             event = threading.Event()
 
             def create_dialog():
                 dialog = ctk.CTkToplevel(self.master)
-                dialog.title("当前章节请求提示词（可编辑）")
+                dialog.title("Current Chapter Request Prompt (Editable)")
                 dialog.geometry("600x400")
-                text_box = ctk.CTkTextbox(dialog, wrap="word", font=("Microsoft YaHei", 12))
+                text_box = ctk.CTkTextbox(dialog, wrap="word", font=("latin modern roman", 12))
                 text_box.pack(fill="both", expand=True, padx=10, pady=10)
 
-                # 字数统计标签
-                wordcount_label = ctk.CTkLabel(dialog, text="字数：0", font=("Microsoft YaHei", 12))
+                # Word count label
+                wordcount_label = ctk.CTkLabel(dialog, text="Word Count: 0", font=("latin modern roman", 12))
                 wordcount_label.pack(side="left", padx=(10,0), pady=5)
                 
-                # 插入角色内容
+                # Insert character content
                 final_prompt = prompt_text
                 role_names = [name.strip() for name in self.char_inv_text.get("0.0", "end").strip().split(',') if name.strip()]
                 role_lib_path = os.path.join(filepath, "角色库")
@@ -199,45 +199,45 @@ def generate_chapter_draft_ui(self):
                                 file_path = os.path.join(root, file)
                                 try:
                                     with open(file_path, 'r', encoding='utf-8') as f:
-                                        role_contents.append(f.read().strip())  # 直接使用文件内容，不添加重复名字
+                                        role_contents.append(f.read().strip())  # Directly use the file content without repeating names
                                 except Exception as e:
-                                    self.safe_log(f"读取角色文件 {file} 失败: {str(e)}")
+                                    self.safe_log(f"Failed to read role file {file}: {str(e)}")
                 
                 if role_contents:
                     role_content_str = "\n".join(role_contents)
-                    # 更精确的替换逻辑，处理不同情况下的占位符
+                    # More accurate replacement logic to handle different placeholder variations
                     placeholder_variations = [
-                        "核心人物(可能未指定)：{characters_involved}",
-                        "核心人物：{characters_involved}",
-                        "核心人物(可能未指定):{characters_involved}",
-                        "核心人物:{characters_involved}"
+                        "Core Characters (may not be specified): {characters_involved}",
+                        "Core Characters: {characters_involved}",
+                        "Core Characters (may not be specified):{characters_involved}",
+                        "Core Characters:{characters_involved}"
                     ]
                     
                     for placeholder in placeholder_variations:
                         if placeholder in final_prompt:
                             final_prompt = final_prompt.replace(
                                 placeholder,
-                                f"核心人物：\n{role_content_str}"
+                                f"Core Characters:\n{role_content_str}"
                             )
                             break
-                    else:  # 如果没有找到任何已知占位符变体
+                    else:  # If no known placeholder variations are found
                         lines = final_prompt.split('\n')
                         for i, line in enumerate(lines):
-                            if "核心人物" in line and "：" in line:
-                                lines[i] = f"核心人物：\n{role_content_str}"
+                            if "Core Characters" in line and "：" in line:
+                                lines[i] = f"Core Characters:\n{role_content_str}"
                                 break
                         final_prompt = '\n'.join(lines)
 
                 text_box.insert("0.0", final_prompt)
-                # 更新字数函数
+                # Word count update function
                 def update_word_count(event=None):
                     text = text_box.get("0.0", "end-1c")
                     text_length = len(text)
-                    wordcount_label.configure(text=f"字数：{text_length}")
+                    wordcount_label.configure(text=f"Word Count: {text_length}")
 
                 text_box.bind("<KeyRelease>", update_word_count)
                 text_box.bind("<ButtonRelease>", update_word_count)
-                update_word_count()  # 初始化统计
+                update_word_count()  # Initialize word count
 
                 button_frame = ctk.CTkFrame(dialog)
                 button_frame.pack(pady=10)
@@ -249,21 +249,21 @@ def generate_chapter_draft_ui(self):
                     result["prompt"] = None
                     dialog.destroy()
                     event.set()
-                btn_confirm = ctk.CTkButton(button_frame, text="确认使用", font=("Microsoft YaHei", 12), command=on_confirm)
+                btn_confirm = ctk.CTkButton(button_frame, text="Confirm", font=("latin modern roman", 12), command=on_confirm)
                 btn_confirm.pack(side="left", padx=10)
-                btn_cancel = ctk.CTkButton(button_frame, text="取消请求", font=("Microsoft YaHei", 12), command=on_cancel)
+                btn_cancel = ctk.CTkButton(button_frame, text="Cancel Request", font=("latin modern roman", 12), command=on_cancel)
                 btn_cancel.pack(side="left", padx=10)
-                # 若用户直接关闭弹窗，则调用 on_cancel 处理
+                # If the user closes the dialog, handle with on_cancel
                 dialog.protocol("WM_DELETE_WINDOW", on_cancel)
                 dialog.grab_set()
             self.master.after(0, create_dialog)
-            event.wait()  # 等待用户操作完成
+            event.wait()  # Wait for user action
             edited_prompt = result["prompt"]
             if edited_prompt is None:
-                self.safe_log("❌ 用户取消了草稿生成请求。")
+                self.safe_log("❌ User canceled the draft generation request.")
                 return
 
-            self.safe_log("开始生成章节草稿...")
+            self.safe_log("Starting chapter draft generation...")
             from novel_generator.chapter import generate_chapter_draft
             draft_text = generate_chapter_draft(
                 api_key=api_key,
@@ -286,27 +286,27 @@ def generate_chapter_draft_ui(self):
                 interface_format=interface_format,
                 max_tokens=max_tokens,
                 timeout=timeout_val,
-                custom_prompt_text=edited_prompt  # 使用用户编辑后的提示词
+                custom_prompt_text=edited_prompt  # Use user-edited prompt
             )
             if draft_text:
-                self.safe_log(f"✅ 第{chap_num}章草稿生成完成。请在左侧查看或编辑。")
+                self.safe_log(f"✅ Chapter {chap_num} draft generation complete. Please view or edit it on the left.")
                 self.master.after(0, lambda: self.show_chapter_in_textbox(draft_text))
             else:
-                self.safe_log("⚠️ 本章草稿生成失败或无内容。")
+                self.safe_log("⚠️ Chapter draft generation failed or no content.")
         except Exception:
-            self.handle_exception("生成章节草稿时出错")
+            self.handle_exception("Error generating chapter draft")
         finally:
             self.enable_button_safe(self.btn_generate_chapter)
     threading.Thread(target=task, daemon=True).start()
-
+    
 def finalize_chapter_ui(self):
     filepath = self.filepath_var.get().strip()
     if not filepath:
-        messagebox.showwarning("警告", "请先配置保存文件路径。")
+        messagebox.showwarning("Warning", "Please configure the save file path first.")
         return
 
     def task():
-        if not messagebox.askyesno("确认", "确定要定稿当前章节吗？"):
+        if not messagebox.askyesno("Confirm", "Are you sure you want to finalize the current chapter?"):
             self.enable_button_safe(self.btn_finalize_chapter)
             return
 
@@ -328,7 +328,7 @@ def finalize_chapter_ui(self):
             chap_num = self.safe_get_int(self.chapter_num_var, 1)
             word_number = self.safe_get_int(self.word_number_var, 3000)
 
-            self.safe_log(f"开始定稿第{chap_num}章...")
+            self.safe_log(f"Starting to finalize chapter {chap_num}...")
 
             chapters_dir = os.path.join(filepath, "chapters")
             os.makedirs(chapters_dir, exist_ok=True)
@@ -337,9 +337,9 @@ def finalize_chapter_ui(self):
             edited_text = self.chapter_result.get("0.0", "end").strip()
 
             if len(edited_text) < 0.7 * word_number:
-                ask = messagebox.askyesno("字数不足", f"当前章节字数 ({len(edited_text)}) 低于目标字数({word_number})的70%，是否要尝试扩写？")
+                ask = messagebox.askyesno("Word Count Insufficient", f"The current chapter word count ({len(edited_text)}) is less than 70% of the target word count ({word_number}). Do you want to attempt to expand the chapter?")
                 if ask:
-                    self.safe_log("正在扩写章节内容...")
+                    self.safe_log("Expanding chapter content...")
                     enriched = enrich_chapter_text(
                         chapter_text=edited_text,
                         word_number=word_number,
@@ -373,12 +373,12 @@ def finalize_chapter_ui(self):
                 max_tokens=max_tokens,
                 timeout=timeout_val
             )
-            self.safe_log(f"✅ 第{chap_num}章定稿完成（已更新前文摘要、角色状态、向量库）。")
+            self.safe_log(f"✅ Chapter {chap_num} finalized (updated previous summaries, character states, and vector store).")
 
             final_text = read_file(chapter_file)
             self.master.after(0, lambda: self.show_chapter_in_textbox(final_text))
         except Exception:
-            self.handle_exception("定稿章节时出错")
+            self.handle_exception("Error finalizing chapter")
         finally:
             self.enable_button_safe(self.btn_finalize_chapter)
     threading.Thread(target=task, daemon=True).start()
@@ -386,7 +386,7 @@ def finalize_chapter_ui(self):
 def do_consistency_check(self):
     filepath = self.filepath_var.get().strip()
     if not filepath:
-        messagebox.showwarning("警告", "请先配置保存文件路径。")
+        messagebox.showwarning("Warning", "Please configure the save file path first.")
         return
 
     def task():
@@ -405,10 +405,10 @@ def do_consistency_check(self):
             chapter_text = read_file(chap_file)
 
             if not chapter_text.strip():
-                self.safe_log("⚠️ 当前章节文件为空或不存在，无法审校。")
+                self.safe_log("⚠️ The current chapter file is empty or does not exist, unable to review.")
                 return
 
-            self.safe_log("开始一致性审校...")
+            self.safe_log("Starting consistency check...")
             result = check_consistency(
                 novel_setting="",
                 character_state=read_file(os.path.join(filepath, "character_state.txt")),
@@ -423,17 +423,17 @@ def do_consistency_check(self):
                 timeout=timeout,
                 plot_arcs=""
             )
-            self.safe_log("审校结果：")
+            self.safe_log("Review results:")
             self.safe_log(result)
         except Exception:
-            self.handle_exception("审校时出错")
+            self.handle_exception("Error during consistency check")
         finally:
             self.enable_button_safe(self.btn_check_consistency)
     threading.Thread(target=task, daemon=True).start()
 
 def import_knowledge_handler(self):
     selected_file = tk.filedialog.askopenfilename(
-        title="选择要导入的知识库文件",
+        title="Select Knowledge Base File to Import",
         filetypes=[("Text Files", "*.txt"), ("All Files", "*.*")]
     )
     if selected_file:
@@ -445,7 +445,7 @@ def import_knowledge_handler(self):
                 emb_format = self.embedding_interface_format_var.get().strip()
                 emb_model = self.embedding_model_name_var.get().strip()
 
-                # 尝试不同编码读取文件
+                # Try different encodings to read the file
                 content = None
                 encodings = ['utf-8', 'gbk', 'gb2312', 'ansi']
                 for encoding in encodings:
@@ -456,13 +456,13 @@ def import_knowledge_handler(self):
                     except UnicodeDecodeError:
                         continue
                     except Exception as e:
-                        self.safe_log(f"读取文件时发生错误: {str(e)}")
+                        self.safe_log(f"Error reading file: {str(e)}")
                         raise
 
                 if content is None:
-                    raise Exception("无法以任何已知编码格式读取文件")
+                    raise Exception("Unable to read the file with any known encoding")
 
-                # 创建临时UTF-8文件
+                # Create temporary UTF-8 file
                 import tempfile
                 import os
                 with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', delete=False, suffix='.txt') as temp:
@@ -470,7 +470,7 @@ def import_knowledge_handler(self):
                     temp_path = temp.name
 
                 try:
-                    self.safe_log(f"开始导入知识库文件: {selected_file}")
+                    self.safe_log(f"Starting to import knowledge base file: {selected_file}")
                     import_knowledge_file(
                         embedding_api_key=emb_api_key,
                         embedding_url=emb_url,
@@ -479,16 +479,16 @@ def import_knowledge_handler(self):
                         file_path=temp_path,
                         filepath=self.filepath_var.get().strip()
                     )
-                    self.safe_log("✅ 知识库文件导入完成。")
+                    self.safe_log("✅ Knowledge base file import complete.")
                 finally:
-                    # 清理临时文件
+                    # Clean up temporary file
                     try:
                         os.unlink(temp_path)
                     except:
                         pass
 
             except Exception:
-                self.handle_exception("导入知识库时出错")
+                self.handle_exception("Error importing knowledge base")
             finally:
                 self.enable_button_safe(self.btn_import_knowledge)
 
@@ -497,42 +497,42 @@ def import_knowledge_handler(self):
             thread.start()
         except Exception as e:
             self.enable_button_safe(self.btn_import_knowledge)
-            messagebox.showerror("错误", f"线程启动失败: {str(e)}")
+            messagebox.showerror("Error", f"Thread startup failed: {str(e)}")
 
 def clear_vectorstore_handler(self):
     filepath = self.filepath_var.get().strip()
     if not filepath:
-        messagebox.showwarning("警告", "请先配置保存文件路径。")
+        messagebox.showwarning("Warning", "Please configure the save file path first.")
         return
 
-    first_confirm = messagebox.askyesno("警告", "确定要清空本地向量库吗？此操作不可恢复！")
+    first_confirm = messagebox.askyesno("Warning", "Are you sure you want to clear the local vector store? This operation is irreversible!")
     if first_confirm:
-        second_confirm = messagebox.askyesno("二次确认", "你确定真的要删除所有向量数据吗？此操作不可恢复！")
+        second_confirm = messagebox.askyesno("Second Confirmation", "Are you sure you want to delete all vector data? This operation is irreversible!")
         if second_confirm:
             if clear_vector_store(filepath):
-                self.log("已清空向量库。")
+                self.log("Vector store cleared.")
             else:
-                self.log(f"未能清空向量库，请关闭程序后手动删除 {filepath} 下的 vectorstore 文件夹。")
+                self.log(f"Failed to clear vector store, please manually delete the vectorstore folder under {filepath} after closing the program.")
 
 def show_plot_arcs_ui(self):
     filepath = self.filepath_var.get().strip()
     if not filepath:
-        messagebox.showwarning("警告", "请先在主Tab中设置保存文件路径")
+        messagebox.showwarning("Warning", "Please configure the save file path in the main tab first.")
         return
 
     plot_arcs_file = os.path.join(filepath, "plot_arcs.txt")
     if not os.path.exists(plot_arcs_file):
-        messagebox.showinfo("剧情要点", "当前还未生成任何剧情要点或冲突记录。")
+        messagebox.showinfo("Plot Arcs", "No plot arcs or unresolved conflicts have been generated yet.")
         return
 
     arcs_text = read_file(plot_arcs_file).strip()
     if not arcs_text:
-        arcs_text = "当前没有记录的剧情要点或冲突。"
+        arcs_text = "No recorded plot arcs or conflicts."
 
     top = ctk.CTkToplevel(self.master)
-    top.title("剧情要点/未解决冲突")
+    top.title("Plot Arcs/Unresolved Conflicts")
     top.geometry("600x400")
-    text_area = ctk.CTkTextbox(top, wrap="word", font=("Microsoft YaHei", 12))
+    text_area = ctk.CTkTextbox(top, wrap="word", font=("latin modern roman", 12))
     text_area.pack(fill="both", expand=True, padx=10, pady=10)
     text_area.insert("0.0", arcs_text)
     text_area.configure(state="disabled")

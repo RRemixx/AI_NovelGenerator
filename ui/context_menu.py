@@ -5,18 +5,18 @@ import customtkinter as ctk
 
 class TextWidgetContextMenu:
     """
-    为 customtkinter.TextBox 或 tkinter.Text 提供右键复制/剪切/粘贴/全选的功能。
+    Provides right-click copy/cut/paste/select all functionality for customtkinter.TextBox or tkinter.Text.
     """
     def __init__(self, widget):
         self.widget = widget
         self.menu = tk.Menu(widget, tearoff=0)
-        self.menu.add_command(label="复制", command=self.copy)
-        self.menu.add_command(label="粘贴", command=self.paste)
-        self.menu.add_command(label="剪切", command=self.cut)
+        self.menu.add_command(label="Copy", command=self.copy)
+        self.menu.add_command(label="Paste", command=self.paste)
+        self.menu.add_command(label="Cut", command=self.cut)
         self.menu.add_separator()
-        self.menu.add_command(label="全选", command=self.select_all)
+        self.menu.add_command(label="Select All", command=self.select_all)
         
-        # 绑定右键事件
+        # Bind right-click event
         self.widget.bind("<Button-3>", self.show_menu)
         
     def show_menu(self, event):
@@ -32,14 +32,14 @@ class TextWidgetContextMenu:
             self.widget.clipboard_clear()
             self.widget.clipboard_append(text)
         except tk.TclError:
-            pass  # 没有选中文本时忽略错误
+            pass  # Ignore error if no text is selected
 
     def paste(self):
         try:
             text = self.widget.clipboard_get()
             self.widget.insert("insert", text)
         except tk.TclError:
-            pass  # 剪贴板为空时忽略错误
+            pass  # Ignore error if clipboard is empty
 
     def cut(self):
         try:
@@ -48,7 +48,7 @@ class TextWidgetContextMenu:
             self.widget.clipboard_clear()
             self.widget.clipboard_append(text)
         except tk.TclError:
-            pass  # 没有选中文本时忽略错误
+            pass  # Ignore error if no text is selected
 
     def select_all(self):
         self.widget.tag_add("sel", "1.0", "end")
